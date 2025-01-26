@@ -1,21 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
-    <Title>ItaiMarom.LibreHardwareMonitorPlugin</Title>
-    <Authors>ItaiMarom</Authors>
-    <Product>ItaiMarom.LibreHardwareMonitorPlugin</Product>
-    <AssemblyName>ItaiMarom.LibreHardwareMonitorPlugin</AssemblyName>
-    <Version>0.1.0</Version>
-    <UseWindowsForms>true</UseWindowsForms>
+	<TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
+	<Title>ItaiMarom.LibreHardwareMonitorPlugin</Title>
+	<Authors>ItaiMarom</Authors>
+	<Product>ItaiMarom.LibreHardwareMonitorPlugin</Product>
+	<AssemblyName>ItaiMarom.LibreHardwareMonitorPlugin</AssemblyName>
+	<Version>0.1.0</Version>
+	<UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Macro Deck 2">
-      <HintPath>..\..\..\..\..\..\Program Files\Macro Deck\Macro Deck 2.dll</HintPath>
-      <EmbedInteropTypes>false</EmbedInteropTypes>
-      <Private>false</Private>
-    </Reference>
+	<Reference Include="Macro Deck 2">
+	  <HintPath>..\..\..\..\..\..\Program Files\Macro Deck\Macro Deck 2.dll</HintPath>
+	  <EmbedInteropTypes>false</EmbedInteropTypes>
+	  <Private>false</Private>
+	</Reference>
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+	
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<Exec Command="xcopy &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25AppData%25\Macro Deck\plugins\$(SolutionName)\$(TargetName).dll&quot; /Y /I" />
+  </Target>
 </Project>

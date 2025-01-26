@@ -8,7 +8,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
     public class LibreHardwareMonitorPlugin : MacroDeckPlugin
     {
         internal static MacroDeckPlugin Instance { get; set; }
-        private const int UpdateInterval = 1000;//should be configurable 
+        private int pollingRate = 1000;//should be configurable 
         private bool dllLoaded = false;
         Assembly assembly;
         Type myClassType;
@@ -16,7 +16,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         MethodInfo myMethod;
 
         // Optional; If your plugin can be configured, set to "true". It'll make the "Configure" button appear in the package manager.
-        public override bool CanConfigure => false;
+        public override bool CanConfigure => true;
 
         // Gets called when the plugin is loaded
         public override void Enable()
@@ -27,14 +27,15 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         }
 
         //// Optional; Gets called when the user clicks on the "Configure" button in the package manager; If CanConfigure is not set to true, you don't need to add this
-        //public override void OpenConfigurator()
-        //{
-        //    // Open your configuration form here
-        //    using (var configurator = new Configurator())
-        //    {
-        //        configurator.ShowDialog();
-        //    }
-        //}
+        public override void OpenConfigurator()
+        {
+            // Open your configuration form here
+            using (var configurator = new DialogForm1())
+            {
+                configurator.ShowDialog();
+                pollingRate = configurator.getPollingRate();
+            }
+        }
 
         private async Task DoWork()
         {
@@ -42,7 +43,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             while (true)
             {
                 Monitor();
-                await Task.Delay(TimeSpan.FromMilliseconds(UpdateInterval));
+                await Task.Delay(TimeSpan.FromMilliseconds(pollingRate));
             }
         }
 
@@ -81,6 +82,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             {
                 MacroDeckLogger.Error(Instance, $"Error: {ex.Message}");
             }
+            dllLoaded = true;
         }
         private void Monitor()
         {
