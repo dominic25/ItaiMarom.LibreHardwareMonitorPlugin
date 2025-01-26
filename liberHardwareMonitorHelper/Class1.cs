@@ -7,9 +7,10 @@ namespace liberHardwareMonitorHelper
 {
     public class liberHardwareMonitorHelper
     {
-        public static void Monitor(MacroDeckPlugin Instance)
+        Computer computer;
+        public liberHardwareMonitorHelper()
         {
-            Computer computer = new Computer
+            computer = new Computer
             {
                 IsCpuEnabled = true,
                 IsGpuEnabled = true,
@@ -19,9 +20,17 @@ namespace liberHardwareMonitorHelper
                 IsNetworkEnabled = true,
                 IsStorageEnabled = true
             };
-
             computer.Open();
-            computer.Accept(new UpdateVisitor());
+        }
+
+         ~liberHardwareMonitorHelper()
+        {
+            computer.Close();
+        }
+
+        public void Monitor(MacroDeckPlugin Instance)
+        {                      
+            computer.Accept(new UpdateVisitor());//refresh sensor data
 
             foreach (IHardware hardware in computer.Hardware)
             {
@@ -46,7 +55,6 @@ namespace liberHardwareMonitorHelper
                     }
                 }
             }
-            computer.Close();
         }
     }
 

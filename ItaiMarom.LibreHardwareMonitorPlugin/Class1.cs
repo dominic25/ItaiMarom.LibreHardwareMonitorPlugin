@@ -9,6 +9,11 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
     {
         internal static MacroDeckPlugin Instance { get; set; }
         private const int UpdateInterval = 1000;//should be configurable 
+        private bool dllLoaded = false;
+        Assembly assembly;
+        Type myClassType;
+        object myClassInstance;
+        MethodInfo myMethod;
 
         // Optional; If your plugin can be configured, set to "true". It'll make the "Configure" button appear in the package manager.
         public override bool CanConfigure => false;
@@ -31,20 +36,22 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         //    }
         //}
 
-        private static async Task DoWork()
+        private async Task DoWork()
         {
+            LoadDll();
             while (true)
             {
-                MacroDeckLogger.Trace(Instance, "DoWork"); // Log a trace (loglevel 1)
-                LoadDllAndMonitor(Instance);
+                Monitor();
                 await Task.Delay(TimeSpan.FromMilliseconds(UpdateInterval));
             }
         }
 
-        private static void LoadDllAndMonitor(MacroDeckPlugin Instance)
+        private void LoadDll()
         {
             try
             {
+                if (dllLoaded)
+                    return;
                 // Path to the DLL
                 string dllName = @"liberHardwareMonitorHelper.dll";
                 string dllPath = @"%Appdata%\Macro Deck\plugins\ItaiMarom.LibreHardwareMonitorPlugin\";
@@ -52,33 +59,41 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 // Expand the environment variable
                 string expandedPath = Environment.ExpandEnvironmentVariables(dllPath + dllName);
                 // Load the DLL
-                Assembly assembly = Assembly.LoadFrom(expandedPath);
+                assembly = Assembly.LoadFrom(expandedPath);
 
                 // Get the type of the class you want to use
-                Type myClassType = assembly.GetType("liberHardwareMonitorHelper.liberHardwareMonitorHelper");
+                myClassType = assembly.GetType("liberHardwareMonitorHelper.liberHardwareMonitorHelper");
 
                 if (myClassType != null)
                 {
                     // Create an instance of the class
-                    object myClassInstance = Activator.CreateInstance(myClassType);
+                    myClassInstance = Activator.CreateInstance(myClassType);
 
                     // Get the method you want to invoke
-                    MethodInfo myMethod = myClassType.GetMethod("Monitor");
-
-                    if (myMethod != null)
-                    {
-                        // Call the method with parameters
-                        myMethod.Invoke(myClassInstance, new object[] { Instance });
-                    }
-                    else
-                    {
-                        MacroDeckLogger.Error(Instance, "Method not found.");
-
-                    }
+                    myMethod = myClassType.GetMethod("Monitor");
                 }
                 else
                 {
                     MacroDeckLogger.Error(Instance, "Class not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(Instance, $"Error: {ex.Message}");
+            }
+        }
+        private void Monitor()
+        {
+            try
+            {
+                if (myMethod != null)
+                {
+                    // Call the method with parameters
+                    myMethod.Invoke(myClassInstance, [Instance]);
+                }
+                else
+                {
+                    MacroDeckLogger.Error(Instance, "Method not found.");
                 }
             }
             catch (Exception ex)
