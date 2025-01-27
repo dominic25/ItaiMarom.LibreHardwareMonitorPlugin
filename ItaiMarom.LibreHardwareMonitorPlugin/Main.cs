@@ -3,6 +3,7 @@ using SuchByte.MacroDeck.Plugins;
 using System.Reflection;
 using System.Threading.Tasks;
 using SuchByte.MacroDeck.Logging;
+using System.Collections.Generic;
 namespace ItaiMarom.LibreHardwareMonitorPlugin
 {
     public class LibreHardwareMonitorPlugin : MacroDeckPlugin
@@ -13,8 +14,9 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         Assembly assembly;
         Type myClassType;
         object myClassInstance;
-        MethodInfo myMethod;
-
+        MethodInfo monitorMethod;
+        MethodInfo listOfSensorsMethod;
+        List<(String hardware, String sensor)> _requestedSensors;
         // Optional; If your plugin can be configured, set to "true". It'll make the "Configure" button appear in the package manager.
         public override bool CanConfigure => true;
 
@@ -29,11 +31,34 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         //// Optional; Gets called when the user clicks on the "Configure" button in the package manager; If CanConfigure is not set to true, you don't need to add this
         public override void OpenConfigurator()
         {
-            // Open your configuration form here
-            using (var configurator = new DialogForm1())
+            LoadDll();
+            List<(String hardware, String sensor)> listOfSensors = null;
+            try
             {
-                configurator.ShowDialog();
-                pollingRate = configurator.getPollingRate();
+                if (listOfSensorsMethod != null)
+                {
+                    // Call the method with parameters
+                    listOfSensors = (List<(string hardware, string sensor)>)listOfSensorsMethod.Invoke(myClassInstance, []);
+                }
+                else
+                {
+                    MacroDeckLogger.Error(Instance, "ListOfSensors Method not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(Instance, $"Error: {ex.Message}");
+            }
+            // Open your configuration form here
+            if (listOfSensors != null)
+            {
+                using (var configurator = new PluginConfig(listOfSensors))
+                {
+
+                    configurator.ShowDialog();
+                    pollingRate = configurator.getPollingRate();
+                    _requestedSensors = configurator.getRequestedSensors();
+                }
             }
         }
 
@@ -71,7 +96,8 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                     myClassInstance = Activator.CreateInstance(myClassType);
 
                     // Get the method you want to invoke
-                    myMethod = myClassType.GetMethod("Monitor");
+                    monitorMethod = myClassType.GetMethod("Monitor");
+                    listOfSensorsMethod = myClassType.GetMethod("ListOfSensors");
                 }
                 else
                 {
@@ -88,14 +114,14 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         {
             try
             {
-                if (myMethod != null)
+                if (monitorMethod != null)
                 {
                     // Call the method with parameters
-                    myMethod.Invoke(myClassInstance, [Instance]);
+                    monitorMethod.Invoke(myClassInstance, [Instance, _requestedSensors]);
                 }
                 else
                 {
-                    MacroDeckLogger.Error(Instance, "Method not found.");
+                    MacroDeckLogger.Error(Instance, "Monitor Method not found.");
                 }
             }
             catch (Exception ex)

@@ -12,9 +12,7 @@
 
   <ItemGroup>
 	<Reference Include="Macro Deck 2">
-	<HintPath>..\..\..\..\..\..\Program Files\Macro Deck\Macro Deck 2.dll</HintPath>
-	<EmbedInteropTypes>false</EmbedInteropTypes>
-	<Private>false</Private>
+	<HintPath>C:\Program Files\Macro Deck\Macro Deck 2.dll</HintPath>
 	</Reference>
   </ItemGroup>
 
