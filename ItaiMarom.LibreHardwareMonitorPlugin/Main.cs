@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using SuchByte.MacroDeck.Logging;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 namespace ItaiMarom.LibreHardwareMonitorPlugin
 {
     public class LibreHardwareMonitorPlugin : MacroDeckPlugin
@@ -24,7 +25,15 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         public override void Enable()
         {
             Instance = this;
-            MacroDeckLogger.Trace(Instance, "started"); // Log a trace (loglevel 1)
+
+            String serialized = PluginConfiguration.GetValue(this, "requestedSensors");
+            if (serialized != "")
+                _requestedSensors = JsonConvert.DeserializeObject<List<(String hardware, String sensor)>>(serialized);
+            String strPollingRate = PluginConfiguration.GetValue(this, "pollingRate");
+            if (strPollingRate != "")
+                pollingRate = int.Parse(strPollingRate);
+
+            pollingRate = int.Parse(PluginConfiguration.GetValue(this, "pollingRate"));
             Task.Run(async () => await DoWork());
         }
 
@@ -38,7 +47,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 if (listOfSensorsMethod != null)
                 {
                     // Call the method with parameters
-                    listOfSensors = (List<(string hardware, string sensor)>)listOfSensorsMethod.Invoke(myClassInstance, []);
+                    listOfSensors = (List<(String hardware, String sensor)>)listOfSensorsMethod.Invoke(myClassInstance, []);
                 }
                 else
                 {
@@ -52,7 +61,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             // Open your configuration form here
             if (listOfSensors != null)
             {
-                using (var configurator = new PluginConfig(listOfSensors))
+                using (var configurator = new PluginConfig(this, listOfSensors))
                 {
 
                     configurator.ShowDialog();
@@ -79,11 +88,11 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 if (dllLoaded)
                     return;
                 // Path to the DLL
-                string dllName = @"liberHardwareMonitorHelper.dll";
-                string dllPath = @"%Appdata%\Macro Deck\plugins\ItaiMarom.LibreHardwareMonitorPlugin\";
+                String dllName = @"liberHardwareMonitorHelper.dll";
+                String dllPath = @"%Appdata%\Macro Deck\plugins\ItaiMarom.LibreHardwareMonitorPlugin\";
 
                 // Expand the environment variable
-                string expandedPath = Environment.ExpandEnvironmentVariables(dllPath + dllName);
+                String expandedPath = Environment.ExpandEnvironmentVariables(dllPath + dllName);
                 // Load the DLL
                 assembly = Assembly.LoadFrom(expandedPath);
 

@@ -1,18 +1,36 @@
-﻿//using SuchByte.MacroDeck.GUI.CustomControls;
+﻿using Newtonsoft.Json;
+using SuchByte.MacroDeck.GUI.CustomControls;
+using SuchByte.MacroDeck.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ItaiMarom.LibreHardwareMonitorPlugin
 {
-    public partial class PluginConfig : SuchByte.MacroDeck.GUI.CustomControls.DialogForm
+    public partial class PluginConfig : DialogForm
     {
+        private MacroDeckPlugin _main;
         private List<(String hardware, String sensor)> requestedSensors;
-        public PluginConfig(List<(String hardware, String sensor)> listOfSensors)
+        public PluginConfig(MacroDeckPlugin main, List<(String hardware, String sensor)> listOfSensors)
         {
+            _main = main;
             requestedSensors = new List<(String hardware, String sensor)>();
-            this.FormClosing += new FormClosingEventHandler(SaveRequestedSensorsOnClose);
             InitializeComponent();
+
+            string serialized = PluginConfiguration.GetValue(_main, "requestedSensors");
+            if (serialized != "")
+            {
+                requestedSensors = JsonConvert.DeserializeObject<List<(String hardware, String sensor)>>(serialized);
+            }
+            string strPollingRate = PluginConfiguration.GetValue(_main, "pollingRate");
+            if (strPollingRate != "")
+            {
+                trackBar1.Value = int.Parse(strPollingRate);
+                textBox1.Text = strPollingRate;
+            }
+
+            this.FormClosing += new FormClosingEventHandler(SaveRequestedSensorsOnClose);
             UpdateSensorsList(listOfSensors);
         }
 
@@ -29,7 +47,10 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         {
             foreach (var sensor in listOfSensors)
             {
-                dataGridView1.Rows.Add(false, sensor.sensor, sensor.hardware);
+                bool chk = false;
+                if (requestedSensors.Any(tuple => tuple.sensor == sensor.sensor && tuple.hardware == sensor.hardware))
+                    chk = true;
+                dataGridView1.Rows.Add(chk, sensor.sensor, sensor.hardware);
             }
         }
 
@@ -41,6 +62,13 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 if (chk.Value != null &&(bool)chk.Value)
                     requestedSensors.Add((row.Cells[2].Value.ToString(), row.Cells[1].Value.ToString()));
             }
+
+            if(requestedSensors.Count > 0)
+            {
+                var serialized = JsonConvert.SerializeObject(requestedSensors);
+                PluginConfiguration.SetValue(_main, "requestedSensors", serialized);
+            }
+            PluginConfiguration.SetValue(_main, "pollingRate", trackBar1.Value.ToString());
         }
 
 

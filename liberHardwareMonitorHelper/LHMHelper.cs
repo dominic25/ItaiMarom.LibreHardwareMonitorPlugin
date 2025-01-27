@@ -1,5 +1,4 @@
 ﻿using LibreHardwareMonitor.Hardware;
-using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
 using SuchByte.MacroDeck.Variables;
 

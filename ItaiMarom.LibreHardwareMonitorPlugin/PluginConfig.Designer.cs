@@ -1,8 +1,4 @@
-﻿using SuchByte.MacroDeck.GUI.CustomControls;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms.VisualStyles;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace ItaiMarom.LibreHardwareMonitorPlugin
