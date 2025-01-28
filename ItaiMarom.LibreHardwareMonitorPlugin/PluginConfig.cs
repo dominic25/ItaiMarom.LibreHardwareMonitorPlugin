@@ -27,18 +27,18 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             string strPollingRate = PluginConfiguration.GetValue(_main, "pollingRate");
             if (strPollingRate != "")
             {
-                trackBar1.Value = int.Parse(strPollingRate);
-                textBox1.Text = strPollingRate;
+                poolingRateTrackBar.Value = int.Parse(strPollingRate);
+                pollingRateTextBox.Text = strPollingRate;
             }
 
             this.FormClosing += new FormClosingEventHandler(SaveRequestedSensorsOnClose);
-            this.dataGridView1.CurrentCellDirtyStateChanged += new EventHandler(dataGridView1_CurrentCellDirtyStateChanged);
+            this.SensorsTable.CurrentCellDirtyStateChanged += new EventHandler(dataGridView1_CurrentCellDirtyStateChanged);
             UpdateSensorsList(listOfSensors);
         }
 
         public int getPollingRate()
         {
-            return trackBar1.Value;
+            return poolingRateTrackBar.Value;
         }
 
         public List<(String hardware, String sensor)> getRequestedSensors()
@@ -52,7 +52,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 bool chk = false;
                 if (requestedSensors.Any(tuple => tuple.sensor == sensor.sensor && tuple.hardware == sensor.hardware))
                     chk = true;
-                dataGridView1.Rows.Add(chk, sensor.sensor, sensor.hardware);
+                SensorsTable.Rows.Add(chk, sensor.sensor, sensor.hardware);
             }
         }
 
@@ -60,7 +60,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         {
             PluginConfiguration.DeletePluginConfig(_main);
             requestedSensors.Clear();
-            foreach (DataGridViewRow row in dataGridView1.Rows)
+            foreach (DataGridViewRow row in SensorsTable.Rows)
             {
                 var chk = (DataGridViewCheckBoxCell)row.Cells[0];
                 if (chk.Value != null && (bool)chk.Value)
@@ -72,16 +72,16 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 var serialized = JsonConvert.SerializeObject(requestedSensors);
                 PluginConfiguration.SetValue(_main, "requestedSensors", serialized);
             }
-            PluginConfiguration.SetValue(_main, "pollingRate", trackBar1.Value.ToString());            
+            PluginConfiguration.SetValue(_main, "pollingRate", poolingRateTrackBar.Value.ToString());            
         }
 
 
-        private void trackBar1_Scroll(object sender, System.EventArgs e)
+        private void pollingRateTrackBar_Scroll(object sender, System.EventArgs e)
         {
-            textBox1.Text = trackBar1.Value.ToString();
+            pollingRateTextBox.Text = poolingRateTrackBar.Value.ToString();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void deleteAllVariablesButton_Click(object sender, EventArgs e)
         {
             LibreHardwareMonitorPlugin libreHardwareMonitorPlugin = _main as LibreHardwareMonitorPlugin;
             if (libreHardwareMonitorPlugin != null)
@@ -92,9 +92,9 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
 
         void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
-            if (dataGridView1.IsCurrentCellDirty)
+            if (SensorsTable.IsCurrentCellDirty)
             {
-                dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                SensorsTable.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
         }
     }

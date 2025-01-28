@@ -33,75 +33,75 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            trackBar1 = new TrackBar();
-            label1 = new Label();
-            textBox1 = new TextBox();
-            label2 = new Label();
-            dataGridView1 = new DataGridView();
+            poolingRateTrackBar = new TrackBar();
+            pollingRatreLabel = new Label();
+            pollingRateTextBox = new TextBox();
+            AvailableSensorsLabel = new Label();
+            SensorsTable = new DataGridView();
             Select = new DataGridViewCheckBoxColumn();
             Sensor = new DataGridViewTextBoxColumn();
             Hardware = new DataGridViewTextBoxColumn();
-            button1 = new Button();
-            ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            deleteAllButton = new Button();
+            ((System.ComponentModel.ISupportInitialize)poolingRateTrackBar).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)SensorsTable).BeginInit();
             SuspendLayout();
             // 
-            // trackBar1
+            // poolingRateTrackBar
             // 
-            trackBar1.AccessibleDescription = "in millisconds";
-            trackBar1.Location = new Point(103, 13);
-            trackBar1.Maximum = 10000;
-            trackBar1.Minimum = 10;
-            trackBar1.Name = "trackBar1";
-            trackBar1.Size = new Size(288, 56);
-            trackBar1.TabIndex = 0;
-            trackBar1.Value = 1000;
-            trackBar1.Scroll += trackBar1_Scroll;
+            poolingRateTrackBar.AccessibleDescription = "in millisconds";
+            poolingRateTrackBar.Location = new Point(103, 13);
+            poolingRateTrackBar.Maximum = 10000;
+            poolingRateTrackBar.Minimum = 10;
+            poolingRateTrackBar.Name = "poolingRateTrackBar";
+            poolingRateTrackBar.Size = new Size(288, 56);
+            poolingRateTrackBar.TabIndex = 0;
+            poolingRateTrackBar.Value = 1000;
+            poolingRateTrackBar.Scroll += pollingRateTrackBar_Scroll;
             // 
-            // label1
+            // pollingRatreLabel
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(4, 29);
-            label1.Name = "label1";
-            label1.Size = new Size(93, 21);
-            label1.TabIndex = 1;
-            label1.Text = "Polling rate";
+            pollingRatreLabel.AutoSize = true;
+            pollingRatreLabel.Location = new Point(4, 29);
+            pollingRatreLabel.Name = "pollingRatreLabel";
+            pollingRatreLabel.Size = new Size(93, 21);
+            pollingRatreLabel.TabIndex = 1;
+            pollingRatreLabel.Text = "Polling rate";
             // 
-            // textBox1
+            // pollingRateTextBox
             // 
-            textBox1.Location = new Point(397, 23);
-            textBox1.Name = "textBox1";
-            textBox1.ReadOnly = true;
-            textBox1.Size = new Size(84, 27);
-            textBox1.TabIndex = 2;
-            textBox1.Text = "1000";
-            textBox1.TextAlign = HorizontalAlignment.Right;
+            pollingRateTextBox.Location = new Point(397, 23);
+            pollingRateTextBox.Name = "pollingRateTextBox";
+            pollingRateTextBox.ReadOnly = true;
+            pollingRateTextBox.Size = new Size(84, 27);
+            pollingRateTextBox.TabIndex = 2;
+            pollingRateTextBox.Text = "1000";
+            pollingRateTextBox.TextAlign = HorizontalAlignment.Right;
             // 
-            // label2
+            // AvailableSensorsLabel
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(4, 60);
-            label2.Name = "label2";
-            label2.Size = new Size(139, 21);
-            label2.TabIndex = 3;
-            label2.Text = "Available sensors";
+            AvailableSensorsLabel.AutoSize = true;
+            AvailableSensorsLabel.Location = new Point(4, 60);
+            AvailableSensorsLabel.Name = "AvailableSensorsLabel";
+            AvailableSensorsLabel.Size = new Size(139, 21);
+            AvailableSensorsLabel.TabIndex = 3;
+            AvailableSensorsLabel.Text = "Available sensors";
             // 
-            // dataGridView1
+            // SensorsTable
             // 
             dataGridViewCellStyle1.ForeColor = Color.Black;
-            dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Select, Sensor, Hardware });
-            dataGridView1.Location = new Point(4, 84);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.RowHeadersWidth = 51;
+            SensorsTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            SensorsTable.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            SensorsTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            SensorsTable.Columns.AddRange(new DataGridViewColumn[] { Select, Sensor, Hardware });
+            SensorsTable.Location = new Point(4, 84);
+            SensorsTable.Name = "SensorsTable";
+            SensorsTable.RowHeadersVisible = false;
+            SensorsTable.RowHeadersWidth = 51;
             dataGridViewCellStyle2.ForeColor = Color.Black;
-            dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle2;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.Size = new Size(844, 409);
-            dataGridView1.TabIndex = 4;
+            SensorsTable.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            SensorsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            SensorsTable.Size = new Size(844, 409);
+            SensorsTable.TabIndex = 4;
             // 
             // Select
             // 
@@ -128,46 +128,46 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             Hardware.ReadOnly = true;
             Hardware.Width = 111;
             // 
-            // button1
+            // deleteAllButton
             // 
-            button1.ForeColor = Color.Black;
-            button1.Location = new Point(675, 21);
-            button1.Name = "button1";
-            button1.Size = new Size(173, 29);
-            button1.TabIndex = 5;
-            button1.Text = "Delete all variables";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            deleteAllButton.ForeColor = Color.Black;
+            deleteAllButton.Location = new Point(675, 21);
+            deleteAllButton.Name = "deleteAllButton";
+            deleteAllButton.Size = new Size(173, 29);
+            deleteAllButton.TabIndex = 5;
+            deleteAllButton.Text = "Delete all variables";
+            deleteAllButton.UseVisualStyleBackColor = true;
+            deleteAllButton.Click += deleteAllVariablesButton_Click;
             // 
             // PluginConfig
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(852, 497);
-            Controls.Add(button1);
-            Controls.Add(dataGridView1);
-            Controls.Add(label2);
-            Controls.Add(textBox1);
-            Controls.Add(label1);
-            Controls.Add(trackBar1);
+            Controls.Add(deleteAllButton);
+            Controls.Add(SensorsTable);
+            Controls.Add(AvailableSensorsLabel);
+            Controls.Add(pollingRateTextBox);
+            Controls.Add(pollingRatreLabel);
+            Controls.Add(poolingRateTrackBar);
             Name = "PluginConfig";
             Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)trackBar1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)poolingRateTrackBar).EndInit();
+            ((System.ComponentModel.ISupportInitialize)SensorsTable).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.TrackBar trackBar1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TrackBar poolingRateTrackBar;
+        private System.Windows.Forms.Label pollingRatreLabel;
+        private System.Windows.Forms.TextBox pollingRateTextBox;
+        private System.Windows.Forms.Label AvailableSensorsLabel;
+        private System.Windows.Forms.DataGridView SensorsTable;
         private DataGridViewCheckBoxColumn Select;
         private DataGridViewTextBoxColumn Sensor;
         private DataGridViewTextBoxColumn Hardware;
-        private Button button1;
+        private Button deleteAllButton;
     }
 }
