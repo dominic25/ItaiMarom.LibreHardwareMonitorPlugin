@@ -39,13 +39,34 @@ namespace liberHardwareMonitorHelper
                 {
                     if (sensor.Value != null)
                     {
-                        String name = sensor.Name + "_" + sensor.SensorType.ToString();
-                        sensors.Add((hardware.Name,name));
+                        String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
+                        sensors.Add((hardware.Name, sensorName));
                     }
                 }
             }
 
             return sensors;
+        }
+
+        public void DeleteAllVariables()
+        {
+
+            computer.Accept(new UpdateVisitor());//refresh sensor data
+
+            foreach (IHardware hardware in computer.Hardware)
+            {
+                foreach (ISensor sensor in hardware.Sensors)
+                {
+                    if (sensor.Value != null)
+                    {
+                        String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
+                        sensorName = sensorName.Replace(" ", "_").ToLower();
+                        VariableManager.DeleteVariable(sensorName);
+                        var test = VariableManager.Variables;
+                    }
+                }
+            }
+
         }
 
         public void Monitor(MacroDeckPlugin Instance, List<(String hardware, String sensor)> requestedSensors)
@@ -62,7 +83,8 @@ namespace liberHardwareMonitorHelper
                             if (sensor.Value != null)
                             {
                                 String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
-                                if (requestedSensors.Any(tuple => tuple.sensor == sensorName))
+                                sensorName = sensorName.Replace(" ", "_").ToLower();
+                                if (requestedSensors.Any(tuple => tuple.sensor.Replace(" ", "_").ToLower() == sensorName))
                                     VariableManager.SetValue(sensorName, sensor.Value, VariableType.Float, Instance, null);
                             }
                         }

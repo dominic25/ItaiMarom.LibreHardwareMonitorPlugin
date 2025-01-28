@@ -41,6 +41,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             Select = new DataGridViewCheckBoxColumn();
             Sensor = new DataGridViewTextBoxColumn();
             Hardware = new DataGridViewTextBoxColumn();
+            button1 = new Button();
             ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
@@ -94,9 +95,11 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Select, Sensor, Hardware });
             dataGridView1.Location = new Point(4, 84);
             dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersVisible = false;
             dataGridView1.RowHeadersWidth = 51;
             dataGridViewCellStyle2.ForeColor = Color.Black;
             dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.Size = new Size(844, 409);
             dataGridView1.TabIndex = 4;
             // 
@@ -125,11 +128,23 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             Hardware.ReadOnly = true;
             Hardware.Width = 111;
             // 
+            // button1
+            // 
+            button1.ForeColor = Color.Black;
+            button1.Location = new Point(675, 21);
+            button1.Name = "button1";
+            button1.Size = new Size(173, 29);
+            button1.TabIndex = 5;
+            button1.Text = "Delete all variables";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // PluginConfig
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(852, 497);
+            Controls.Add(button1);
             Controls.Add(dataGridView1);
             Controls.Add(label2);
             Controls.Add(textBox1);
@@ -153,5 +168,6 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         private DataGridViewCheckBoxColumn Select;
         private DataGridViewTextBoxColumn Sensor;
         private DataGridViewTextBoxColumn Hardware;
+        private Button button1;
     }
 }

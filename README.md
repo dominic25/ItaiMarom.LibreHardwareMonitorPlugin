@@ -3,7 +3,7 @@ integrate the capabilities of the LibreHardwareMonitor library into Macro Deck!
 
 # Features
 - ### Comprehensive Hardware Monitoring
-ccess detailed information from various hardware components such as:
+Access detailed information from various hardware components such as:
 
     Motherboards
     Intel and AMD processors

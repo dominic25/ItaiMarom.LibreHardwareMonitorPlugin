@@ -17,6 +17,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         object myClassInstance;
         MethodInfo monitorMethod;
         MethodInfo listOfSensorsMethod;
+        MethodInfo DeleteAllVariablesMethod;
         List<(String hardware, String sensor)> _requestedSensors;
         // Optional; If your plugin can be configured, set to "true". It'll make the "Configure" button appear in the package manager.
         public override bool CanConfigure => true;
@@ -69,7 +70,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                     _requestedSensors = configurator.getRequestedSensors();
                 }
             }
-        }
+        }        
 
         private async Task DoWork()
         {
@@ -107,6 +108,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                     // Get the method you want to invoke
                     monitorMethod = myClassType.GetMethod("Monitor");
                     listOfSensorsMethod = myClassType.GetMethod("ListOfSensors");
+                    DeleteAllVariablesMethod = myClassType.GetMethod("DeleteAllVariables");
                 }
                 else
                 {
@@ -131,6 +133,26 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 else
                 {
                     MacroDeckLogger.Error(Instance, "Monitor Method not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(Instance, $"Error: {ex.Message}");
+            }
+        }
+
+        public void DeleteAllVariables()
+        {
+            try
+            {
+                if (monitorMethod != null)
+                {
+                    // Call the method with parameters
+                    DeleteAllVariablesMethod.Invoke(myClassInstance, []);
+                }
+                else
+                {
+                    MacroDeckLogger.Error(Instance, "DeleteAllVariables Method not found.");
                 }
             }
             catch (Exception ex)
