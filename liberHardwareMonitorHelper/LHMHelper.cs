@@ -22,7 +22,7 @@ namespace liberHardwareMonitorHelper
             computer.Open();
         }
 
-         ~liberHardwareMonitorHelper()
+        ~liberHardwareMonitorHelper()
         {
             computer.Close();
         }

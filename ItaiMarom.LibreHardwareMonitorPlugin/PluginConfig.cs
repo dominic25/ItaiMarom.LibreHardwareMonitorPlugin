@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using TreeView = System.Windows.Forms.TreeView;
 
 namespace ItaiMarom.LibreHardwareMonitorPlugin
 {
@@ -31,8 +32,8 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 pollingRateTextBox.Text = strPollingRate;
             }
 
-            this.FormClosing += new FormClosingEventHandler(SaveRequestedSensorsOnClose);
-            this.SensorsTable.CurrentCellDirtyStateChanged += new EventHandler(dataGridView1_CurrentCellDirtyStateChanged);
+            FormClosing += new FormClosingEventHandler(SaveRequestedSensorsOnClose);
+            sensorsTreeView.AfterCheck += sensorsTreeView_AfterCheck;
             UpdateSensorsList(listOfSensors);
         }
 
@@ -52,7 +53,10 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 bool chk = false;
                 if (requestedSensors.Any(tuple => tuple.sensor == sensor.sensor && tuple.hardware == sensor.hardware))
                     chk = true;
-                SensorsTable.Rows.Add(chk, sensor.sensor, sensor.hardware);
+                if (!sensorsTreeView.Nodes.ContainsKey(sensor.hardware))
+                    sensorsTreeView.Nodes.Add(sensor.hardware, sensor.hardware);
+                sensorsTreeView.Nodes[sensor.hardware].Nodes.Add(sensor.sensor, sensor.sensor);
+                sensorsTreeView.Nodes[sensor.hardware].Nodes[sensor.sensor].Checked = chk;
             }
         }
 
@@ -60,11 +64,11 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         {
             PluginConfiguration.DeletePluginConfig(_main);
             requestedSensors.Clear();
-            foreach (DataGridViewRow row in SensorsTable.Rows)
+
+            List<TreeNode> checkedNodes = GetCheckedNodes(sensorsTreeView);
+            foreach (TreeNode node in checkedNodes)
             {
-                var chk = (DataGridViewCheckBoxCell)row.Cells[0];
-                if (chk.Value != null && (bool)chk.Value)
-                    requestedSensors.Add((row.Cells[2].Value.ToString(), row.Cells[1].Value.ToString()));
+                requestedSensors.Add((node.Parent.Text, node.Text));
             }
 
             if (requestedSensors.Count > 0)
@@ -72,9 +76,65 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 var serialized = JsonConvert.SerializeObject(requestedSensors);
                 PluginConfiguration.SetValue(_main, "requestedSensors", serialized);
             }
-            PluginConfiguration.SetValue(_main, "pollingRate", poolingRateTrackBar.Value.ToString());            
+            PluginConfiguration.SetValue(_main, "pollingRate", poolingRateTrackBar.Value.ToString());
         }
 
+
+        // Method to get all checked nodes in a TreeView
+        public static List<TreeNode> GetCheckedNodes(TreeView treeView)
+        {
+            List<TreeNode> checkedNodes = new List<TreeNode>();
+            foreach (TreeNode node in treeView.Nodes)
+            {
+                GetCheckedNodes(node, checkedNodes);
+            }
+            return checkedNodes;
+        }
+
+        // Recursive helper method
+        private static void GetCheckedNodes(TreeNode treeNode, List<TreeNode> checkedNodes)
+        {
+            if (treeNode.Checked)
+            {
+                checkedNodes.Add(treeNode);
+            }
+
+            foreach (TreeNode childNode in treeNode.Nodes)
+            {
+                GetCheckedNodes(childNode, checkedNodes);
+            }
+        }
+
+        private void sensorsTreeView_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            // Prevent recursive execution of this event
+            sensorsTreeView.AfterCheck -= sensorsTreeView_AfterCheck;
+
+            try
+            {
+                // Update child nodes to match the parent node's checked state
+                SetChildNodesCheckedState(e.Node, e.Node.Checked);
+            }
+            finally
+            {
+                // Re-attach the event handler
+                sensorsTreeView.AfterCheck += sensorsTreeView_AfterCheck;
+            }
+        }
+
+        private void SetChildNodesCheckedState(TreeNode parentNode, bool isChecked)
+        {
+            foreach (TreeNode childNode in parentNode.Nodes)
+            {
+                childNode.Checked = isChecked;
+
+                // Recursively set state for child nodes of this node
+                if (childNode.Nodes.Count > 0)
+                {
+                    SetChildNodesCheckedState(childNode, isChecked);
+                }
+            }
+        }
 
         private void pollingRateTrackBar_Scroll(object sender, System.EventArgs e)
         {
@@ -88,14 +148,6 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 libreHardwareMonitorPlugin.DeleteAllVariables();
             else
                 MacroDeckLogger.Error(_main, "when deleteting _main was not of type LibreHardwareMonitorPlugin");
-        }
-
-        void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-            if (SensorsTable.IsCurrentCellDirty)
-            {
-                SensorsTable.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            }
         }
     }
 }

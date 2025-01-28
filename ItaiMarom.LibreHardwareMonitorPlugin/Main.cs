@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using SuchByte.MacroDeck.Logging;
-using System.Collections.Generic;
-using Newtonsoft.Json;
 namespace ItaiMarom.LibreHardwareMonitorPlugin
 {
     public class LibreHardwareMonitorPlugin : MacroDeckPlugin
@@ -70,7 +70,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                     _requestedSensors = configurator.getRequestedSensors();
                 }
             }
-        }        
+        }
 
         private async Task DoWork()
         {
