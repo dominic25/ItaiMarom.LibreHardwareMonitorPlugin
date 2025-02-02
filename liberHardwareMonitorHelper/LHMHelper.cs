@@ -27,9 +27,9 @@ namespace liberHardwareMonitorHelper
             computer.Close();
         }
 
-        public List<(String hardware, String sensor)> ListOfSensors()
+        public List<(String hardware, String type, String sensor)> ListOfSensors()
         {
-            var sensors = new List<(String hardware, String sensor)>();
+            var sensors = new List<(String hardware, String type, String sensor)>();
 
             computer.Accept(new UpdateVisitor());//refresh sensor data
 
@@ -40,7 +40,7 @@ namespace liberHardwareMonitorHelper
                     if (sensor.Value != null)
                     {
                         String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
-                        sensors.Add((hardware.Name, sensorName));
+                        sensors.Add((hardware.Name, sensor.SensorType.ToString(), sensorName));
                     }
                 }
             }
@@ -69,7 +69,7 @@ namespace liberHardwareMonitorHelper
 
         }
 
-        public void Monitor(MacroDeckPlugin Instance, List<(String hardware, String sensor)> requestedSensors)
+        public void Monitor(MacroDeckPlugin Instance, List<(String hardware, String type, String sensor)> requestedSensors)
         {
             if (requestedSensors != null)
             {

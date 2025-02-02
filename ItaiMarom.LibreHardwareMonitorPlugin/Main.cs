@@ -18,7 +18,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         MethodInfo monitorMethod;
         MethodInfo listOfSensorsMethod;
         MethodInfo DeleteAllVariablesMethod;
-        List<(String hardware, String sensor)> _requestedSensors;
+        List<(String hardware, String type, String sensor)> _requestedSensors;
         // Optional; If your plugin can be configured, set to "true". It'll make the "Configure" button appear in the package manager.
         public override bool CanConfigure => true;
 
@@ -29,7 +29,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
 
             String serialized = PluginConfiguration.GetValue(this, "requestedSensors");
             if (serialized != "")
-                _requestedSensors = JsonConvert.DeserializeObject<List<(String hardware, String sensor)>>(serialized);
+                _requestedSensors = JsonConvert.DeserializeObject<List<(String hardware, String type, String sensor)>>(serialized);
             String strPollingRate = PluginConfiguration.GetValue(this, "pollingRate");
             if (strPollingRate != "")
                 pollingRate = int.Parse(strPollingRate);
@@ -42,13 +42,13 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         public override void OpenConfigurator()
         {
             LoadDll();
-            List<(String hardware, String sensor)> listOfSensors = null;
+            List<(String hardware, String type, String sensor)> listOfSensors = null;
             try
             {
                 if (listOfSensorsMethod != null)
                 {
                     // Call the method with parameters
-                    listOfSensors = (List<(String hardware, String sensor)>)listOfSensorsMethod.Invoke(myClassInstance, []);
+                    listOfSensors = (List<(String hardware, String type, String sensor)>)listOfSensorsMethod.Invoke(myClassInstance, []);
                 }
                 else
                 {

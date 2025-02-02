@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using TreeView = System.Windows.Forms.TreeView;
 
 namespace ItaiMarom.LibreHardwareMonitorPlugin
@@ -13,17 +14,17 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
     public partial class PluginConfig : DialogForm
     {
         private MacroDeckPlugin _main;
-        private List<(String hardware, String sensor)> requestedSensors;
-        public PluginConfig(MacroDeckPlugin main, List<(String hardware, String sensor)> listOfSensors)
+        private List<(String hardware, String type, String sensor)> requestedSensors;
+        public PluginConfig(MacroDeckPlugin main, List<(String hardware, String type, String sensor)> listOfSensors)
         {
             _main = main;
-            requestedSensors = new List<(String hardware, String sensor)>();
+            requestedSensors = new List<(String hardware, String type, String sensor)>();
             InitializeComponent();
 
             string serialized = PluginConfiguration.GetValue(_main, "requestedSensors");
             if (serialized != "")
             {
-                requestedSensors = JsonConvert.DeserializeObject<List<(String hardware, String sensor)>>(serialized);
+                requestedSensors = JsonConvert.DeserializeObject<List<(String hardware, String type, String sensor)>>(serialized);
             }
             string strPollingRate = PluginConfiguration.GetValue(_main, "pollingRate");
             if (strPollingRate != "")
@@ -42,11 +43,11 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             return poolingRateTrackBar.Value;
         }
 
-        public List<(String hardware, String sensor)> getRequestedSensors()
+        public List<(String hardware, String type, String sensor)> getRequestedSensors()
         {
             return requestedSensors;
         }
-        private void UpdateSensorsTree(List<(String hardware, String sensor)> listOfSensors)
+        private void UpdateSensorsTree(List<(String hardware, String type, String sensor)> listOfSensors)
         {
             foreach (var sensor in listOfSensors)
             {
@@ -55,8 +56,10 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                     chk = true;
                 if (!sensorsTreeView.Nodes.ContainsKey(sensor.hardware))
                     sensorsTreeView.Nodes.Add(sensor.hardware, sensor.hardware);
-                sensorsTreeView.Nodes[sensor.hardware].Nodes.Add(sensor.sensor, sensor.sensor);
-                sensorsTreeView.Nodes[sensor.hardware].Nodes[sensor.sensor].Checked = chk;
+                if(!sensorsTreeView.Nodes[sensor.hardware].Nodes.ContainsKey(sensor.type))
+                    sensorsTreeView.Nodes[sensor.hardware].Nodes.Add(sensor.type, sensor.type);
+                sensorsTreeView.Nodes[sensor.hardware].Nodes[sensor.type].Nodes.Add(sensor.sensor, sensor.sensor);
+                sensorsTreeView.Nodes[sensor.hardware].Nodes[sensor.type].Nodes[sensor.sensor].Checked = chk;
             }
         }
 
@@ -68,7 +71,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             List<TreeNode> checkedNodes = GetCheckedNodes(sensorsTreeView);
             foreach (TreeNode node in checkedNodes)
             {
-                requestedSensors.Add((node.Parent.Text, node.Text));
+                requestedSensors.Add((node.Parent.Parent.Text, node.Parent.Text, node.Text));
             }
 
             if (requestedSensors.Count > 0)
@@ -94,7 +97,8 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         // Recursive helper method
         private static void GetCheckedNodes(TreeNode treeNode, List<TreeNode> checkedNodes)
         {
-            if (treeNode.Checked)
+
+            if (treeNode.Checked && treeNode.Nodes.Count == 0)
             {
                 checkedNodes.Add(treeNode);
             }
