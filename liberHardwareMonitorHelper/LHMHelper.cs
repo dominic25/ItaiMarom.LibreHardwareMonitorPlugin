@@ -85,7 +85,45 @@ namespace liberHardwareMonitorHelper
                                 String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
                                 sensorName = sensorName.Replace(" ", "_").ToLower();
                                 if (requestedSensors.Any(tuple => tuple.sensor.Replace(" ", "_").ToLower() == sensorName))
-                                    VariableManager.SetValue(sensorName, sensor.Value, VariableType.Float, Instance, null);
+                                {
+                                    switch (sensor.SensorType)
+                                    {
+                                        case SensorType.Voltage:
+                                        case SensorType.Current:
+                                        case SensorType.Power:
+                                        case SensorType.Data:
+                                        case SensorType.Throughput:
+                                            VariableManager.SetValue(sensorName, sensor.Value, VariableType.Float, Instance, null);
+                                            break;
+                                        case SensorType.Clock:
+                                        case SensorType.Temperature:
+                                        case SensorType.Load:
+                                        case SensorType.Frequency:
+                                        case SensorType.Fan:
+                                        case SensorType.Flow:
+                                        case SensorType.Control:
+                                        case SensorType.Level:
+                                            VariableManager.SetValue(sensorName, (int)sensor.Value, VariableType.Integer, Instance, null);
+                                            break;
+                                        //case SensorType.Factor:
+                                        //    break;
+                                        //case SensorType.SmallData:
+                                        //    break;
+                                        //case SensorType.TimeSpan:
+                                        //    break;
+                                        //case SensorType.Energy:
+                                        //    break;
+                                        //case SensorType.Noise:
+                                        //    break;
+                                        //case SensorType.Conductivity:
+                                        //    break;
+                                        //case SensorType.Humidity:
+                                        //    break;
+                                        default:
+                                            VariableManager.SetValue(sensorName, sensor.Value, VariableType.Float, Instance, null);
+                                            break;
+                                    }
+                                }
                             }
                         }
                     }

@@ -34,7 +34,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
 
             FormClosing += new FormClosingEventHandler(SaveRequestedSensorsOnClose);
             sensorsTreeView.AfterCheck += sensorsTreeView_AfterCheck;
-            UpdateSensorsList(listOfSensors);
+            UpdateSensorsTree(listOfSensors);
         }
 
         public int getPollingRate()
@@ -46,7 +46,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         {
             return requestedSensors;
         }
-        private void UpdateSensorsList(List<(String hardware, String sensor)> listOfSensors)
+        private void UpdateSensorsTree(List<(String hardware, String sensor)> listOfSensors)
         {
             foreach (var sensor in listOfSensors)
             {
