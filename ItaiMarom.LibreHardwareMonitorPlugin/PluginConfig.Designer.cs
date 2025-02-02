@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using SIL.FieldWorks.Common.Controls;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace ItaiMarom.LibreHardwareMonitorPlugin
@@ -36,7 +37,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             pollingRateTextBox = new TextBox();
             AvailableSensorsLabel = new Label();
             deleteAllButton = new Button();
-            sensorsTreeView = new TreeView();
+            sensorsTreeView = new TriStateTreeView();
             ((System.ComponentModel.ISupportInitialize)poolingRateTrackBar).BeginInit();
             SuspendLayout();
             // 
@@ -50,7 +51,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             poolingRateTrackBar.Size = new Size(288, 56);
             poolingRateTrackBar.TabIndex = 0;
             poolingRateTrackBar.Value = 1000;
-            poolingRateTrackBar.Scroll += pollingRateTrackBar_Scroll;
+            poolingRateTrackBar.Scroll += PollingRateTrackBar_Scroll;
             // 
             // pollingRatreLabel
             // 
@@ -89,11 +90,10 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             deleteAllButton.TabIndex = 5;
             deleteAllButton.Text = "Delete all variables";
             deleteAllButton.UseVisualStyleBackColor = true;
-            deleteAllButton.Click += deleteAllVariablesButton_Click;
+            deleteAllButton.Click += DeleteAllVariablesButton_Click;
             // 
             // sensorsTreeView
             // 
-            sensorsTreeView.CheckBoxes = true;
             sensorsTreeView.Location = new Point(4, 84);
             sensorsTreeView.Name = "sensorsTreeView";
             sensorsTreeView.Size = new Size(844, 409);
@@ -124,6 +124,6 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         private System.Windows.Forms.TextBox pollingRateTextBox;
         private System.Windows.Forms.Label AvailableSensorsLabel;
         private Button deleteAllButton;
-        private TreeView sensorsTreeView;
+        private TriStateTreeView sensorsTreeView;
     }
 }

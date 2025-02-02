@@ -66,8 +66,8 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 {
 
                     configurator.ShowDialog();
-                    pollingRate = configurator.getPollingRate();
-                    _requestedSensors = configurator.getRequestedSensors();
+                    pollingRate = configurator.GetPollingRate();
+                    _requestedSensors = configurator.GetRequestedSensors();
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 assembly = Assembly.LoadFrom(expandedPath);
 
                 // Get the type of the class you want to use
-                myClassType = assembly.GetType("liberHardwareMonitorHelper.liberHardwareMonitorHelper");
+                myClassType = assembly.GetType("liberHardwareMonitorHelper.LiberHardwareMonitorHelper");
 
                 if (myClassType != null)
                 {

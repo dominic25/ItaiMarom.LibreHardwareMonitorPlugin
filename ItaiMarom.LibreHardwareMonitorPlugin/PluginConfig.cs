@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SIL.FieldWorks.Common.Controls;
 using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
@@ -34,16 +35,15 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             }
 
             FormClosing += new FormClosingEventHandler(SaveRequestedSensorsOnClose);
-            sensorsTreeView.AfterCheck += sensorsTreeView_AfterCheck;
             UpdateSensorsTree(listOfSensors);
         }
 
-        public int getPollingRate()
+        public int GetPollingRate()
         {
             return poolingRateTrackBar.Value;
         }
 
-        public List<(String hardware, String type, String sensor)> getRequestedSensors()
+        public List<(String hardware, String type, String sensor)> GetRequestedSensors()
         {
             return requestedSensors;
         }
@@ -59,7 +59,11 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                 if(!sensorsTreeView.Nodes[sensor.hardware].Nodes.ContainsKey(sensor.type))
                     sensorsTreeView.Nodes[sensor.hardware].Nodes.Add(sensor.type, sensor.type);
                 sensorsTreeView.Nodes[sensor.hardware].Nodes[sensor.type].Nodes.Add(sensor.sensor, sensor.sensor);
-                sensorsTreeView.Nodes[sensor.hardware].Nodes[sensor.type].Nodes[sensor.sensor].Checked = chk;
+                if (chk)
+                {
+                    TreeNode node = sensorsTreeView.Nodes[sensor.hardware].Nodes[sensor.type].Nodes[sensor.sensor];
+                    sensorsTreeView.SetChecked(node, TriStateTreeView.CheckState.Checked);
+                }
             }
         }
 
@@ -84,7 +88,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
 
 
         // Method to get all checked nodes in a TreeView
-        public static List<TreeNode> GetCheckedNodes(TreeView treeView)
+        public List<TreeNode> GetCheckedNodes(TreeView treeView)
         {
             List<TreeNode> checkedNodes = new List<TreeNode>();
             foreach (TreeNode node in treeView.Nodes)
@@ -95,10 +99,10 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         }
 
         // Recursive helper method
-        private static void GetCheckedNodes(TreeNode treeNode, List<TreeNode> checkedNodes)
+        private void GetCheckedNodes(TreeNode treeNode, List<TreeNode> checkedNodes)
         {
 
-            if (treeNode.Checked && treeNode.Nodes.Count == 0)
+            if (sensorsTreeView.GetChecked(treeNode) == TriStateTreeView.CheckState.Checked && treeNode.Nodes.Count == 0)
             {
                 checkedNodes.Add(treeNode);
             }
@@ -107,48 +111,16 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             {
                 GetCheckedNodes(childNode, checkedNodes);
             }
-        }
+        }       
 
-        private void sensorsTreeView_AfterCheck(object sender, TreeViewEventArgs e)
-        {
-            // Prevent recursive execution of this event
-            sensorsTreeView.AfterCheck -= sensorsTreeView_AfterCheck;
-
-            try
-            {
-                // Update child nodes to match the parent node's checked state
-                SetChildNodesCheckedState(e.Node, e.Node.Checked);
-            }
-            finally
-            {
-                // Re-attach the event handler
-                sensorsTreeView.AfterCheck += sensorsTreeView_AfterCheck;
-            }
-        }
-
-        private void SetChildNodesCheckedState(TreeNode parentNode, bool isChecked)
-        {
-            foreach (TreeNode childNode in parentNode.Nodes)
-            {
-                childNode.Checked = isChecked;
-
-                // Recursively set state for child nodes of this node
-                if (childNode.Nodes.Count > 0)
-                {
-                    SetChildNodesCheckedState(childNode, isChecked);
-                }
-            }
-        }
-
-        private void pollingRateTrackBar_Scroll(object sender, System.EventArgs e)
+        private void PollingRateTrackBar_Scroll(object sender, System.EventArgs e)
         {
             pollingRateTextBox.Text = poolingRateTrackBar.Value.ToString();
         }
 
-        private void deleteAllVariablesButton_Click(object sender, EventArgs e)
+        private void DeleteAllVariablesButton_Click(object sender, EventArgs e)
         {
-            LibreHardwareMonitorPlugin libreHardwareMonitorPlugin = _main as LibreHardwareMonitorPlugin;
-            if (libreHardwareMonitorPlugin != null)
+            if (_main is LibreHardwareMonitorPlugin libreHardwareMonitorPlugin)
                 libreHardwareMonitorPlugin.DeleteAllVariables();
             else
                 MacroDeckLogger.Error(_main, "when deleteting _main was not of type LibreHardwareMonitorPlugin");

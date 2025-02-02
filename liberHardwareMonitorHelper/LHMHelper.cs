@@ -4,10 +4,10 @@ using SuchByte.MacroDeck.Variables;
 
 namespace liberHardwareMonitorHelper
 {
-    public class liberHardwareMonitorHelper
+    public class LiberHardwareMonitorHelper
     {
         Computer computer;
-        public liberHardwareMonitorHelper()
+        public LiberHardwareMonitorHelper()
         {
             computer = new Computer
             {
@@ -22,7 +22,7 @@ namespace liberHardwareMonitorHelper
             computer.Open();
         }
 
-        ~liberHardwareMonitorHelper()
+        ~LiberHardwareMonitorHelper()
         {
             computer.Close();
         }
@@ -62,7 +62,6 @@ namespace liberHardwareMonitorHelper
                         String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
                         sensorName = sensorName.Replace(" ", "_").ToLower();
                         VariableManager.DeleteVariable(sensorName);
-                        var test = VariableManager.Variables;
                     }
                 }
             }
@@ -84,7 +83,7 @@ namespace liberHardwareMonitorHelper
                             {
                                 String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
                                 sensorName = sensorName.Replace(" ", "_").ToLower();
-                                if (requestedSensors.Any(tuple => tuple.sensor.Replace(" ", "_").ToLower() == sensorName))
+                                if (requestedSensors.Any(tuple => tuple.sensor.Replace(" ", "_").ToLower().Equals(sensorName, StringComparison.CurrentCultureIgnoreCase)))
                                 {
                                     switch (sensor.SensorType)
                                     {
