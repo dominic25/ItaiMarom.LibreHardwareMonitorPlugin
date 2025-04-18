@@ -62,13 +62,10 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             // Open your configuration form here
             if (listOfSensors != null)
             {
-                using (var configurator = new PluginConfig(this, listOfSensors))
-                {
-
-                    configurator.ShowDialog();
-                    pollingRate = configurator.GetPollingRate();
-                    _requestedSensors = configurator.GetRequestedSensors();
-                }
+                using var configurator = new PluginConfig(this, listOfSensors);
+                configurator.ShowDialog();
+                pollingRate = configurator.GetPollingRate();
+                _requestedSensors = configurator.GetRequestedSensors();
             }
         }
 

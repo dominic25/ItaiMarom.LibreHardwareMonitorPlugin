@@ -6,7 +6,7 @@ namespace liberHardwareMonitorHelper
 {
     public class LiberHardwareMonitorHelper
     {
-        Computer computer;
+        readonly Computer computer;
         public LiberHardwareMonitorHelper()
         {
             computer = new Computer

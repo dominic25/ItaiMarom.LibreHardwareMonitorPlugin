@@ -7,19 +7,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using TreeView = System.Windows.Forms.TreeView;
 
 namespace ItaiMarom.LibreHardwareMonitorPlugin
 {
     public partial class PluginConfig : DialogForm
     {
-        private MacroDeckPlugin _main;
+        private readonly MacroDeckPlugin _main;
         private List<(String hardware, String type, String sensor)> requestedSensors;
         public PluginConfig(MacroDeckPlugin main, List<(String hardware, String type, String sensor)> listOfSensors)
         {
             _main = main;
-            requestedSensors = new List<(String hardware, String type, String sensor)>();
+            requestedSensors = [];
             InitializeComponent();
 
             string serialized = PluginConfiguration.GetValue(_main, "requestedSensors");
@@ -56,7 +55,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
                     chk = true;
                 if (!sensorsTreeView.Nodes.ContainsKey(sensor.hardware))
                     sensorsTreeView.Nodes.Add(sensor.hardware, sensor.hardware);
-                if(!sensorsTreeView.Nodes[sensor.hardware].Nodes.ContainsKey(sensor.type))
+                if (!sensorsTreeView.Nodes[sensor.hardware].Nodes.ContainsKey(sensor.type))
                     sensorsTreeView.Nodes[sensor.hardware].Nodes.Add(sensor.type, sensor.type);
                 sensorsTreeView.Nodes[sensor.hardware].Nodes[sensor.type].Nodes.Add(sensor.sensor, sensor.sensor);
                 if (chk)
@@ -90,7 +89,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         // Method to get all checked nodes in a TreeView
         public List<TreeNode> GetCheckedNodes(TreeView treeView)
         {
-            List<TreeNode> checkedNodes = new List<TreeNode>();
+            List<TreeNode> checkedNodes = [];
             foreach (TreeNode node in treeView.Nodes)
             {
                 GetCheckedNodes(node, checkedNodes);
@@ -111,7 +110,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             {
                 GetCheckedNodes(childNode, checkedNodes);
             }
-        }       
+        }
 
         private void PollingRateTrackBar_Scroll(object sender, System.EventArgs e)
         {
