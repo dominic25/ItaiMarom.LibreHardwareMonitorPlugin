@@ -117,6 +117,36 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             pollingRateTextBox.Text = poolingRateTrackBar.Value.ToString();
         }
 
+        private void PollingRateTextBox_Update(object sender, System.EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(pollingRateTextBox.Text))
+            {
+                pollingRateTextBox.Text = poolingRateTrackBar.Value.ToString(); // Revert to current value
+                return;
+            }
+
+            if (int.TryParse(pollingRateTextBox.Text, out var pollingRate))
+            {
+                // Clamp the value between 10 and 10,000
+                pollingRate = Math.Max(10, Math.Min(10000, pollingRate));
+                pollingRateTextBox.Text = pollingRate.ToString();
+                poolingRateTrackBar.Value = pollingRate;
+            }
+            else
+            {
+                pollingRateTextBox.Text = poolingRateTrackBar.Value.ToString(); // Revert to current value
+            }
+        }
+
+        private void PollingRateTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Allow only digits, backspace, and delete
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true; // Suppress the key press
+            }
+        }
+
         private void DeleteAllVariablesButton_Click(object sender, EventArgs e)
         {
             if (_main is LibreHardwareMonitorPlugin libreHardwareMonitorPlugin)

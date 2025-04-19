@@ -32,6 +32,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             poolingRateTrackBar = new TrackBar();
             pollingRatreLabel = new Label();
             pollingRateTextBox = new TextBox();
@@ -66,11 +67,12 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             // 
             pollingRateTextBox.Location = new Point(397, 23);
             pollingRateTextBox.Name = "pollingRateTextBox";
-            pollingRateTextBox.ReadOnly = true;
             pollingRateTextBox.Size = new Size(84, 27);
             pollingRateTextBox.TabIndex = 2;
             pollingRateTextBox.Text = "1000";
             pollingRateTextBox.TextAlign = HorizontalAlignment.Right;
+            pollingRateTextBox.KeyPress += PollingRateTextBox_KeyPress;
+            pollingRateTextBox.Leave += PollingRateTextBox_Update;
             // 
             // AvailableSensorsLabel
             // 
@@ -94,8 +96,10 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             // 
             // sensorsTreeView
             // 
+            sensorsTreeView.ImageIndex = 1;
             sensorsTreeView.Location = new Point(4, 84);
             sensorsTreeView.Name = "sensorsTreeView";
+            sensorsTreeView.SelectedImageIndex = 1;
             sensorsTreeView.Size = new Size(844, 409);
             sensorsTreeView.TabIndex = 6;
             // 
@@ -111,7 +115,7 @@ namespace ItaiMarom.LibreHardwareMonitorPlugin
             Controls.Add(pollingRatreLabel);
             Controls.Add(poolingRateTrackBar);
             Name = "PluginConfig";
-            Text = "Form1";
+            Text = "Plugin config";
             ((System.ComponentModel.ISupportInitialize)poolingRateTrackBar).EndInit();
             ResumeLayout(false);
             PerformLayout();
