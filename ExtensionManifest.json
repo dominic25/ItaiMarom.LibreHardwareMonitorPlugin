@@ -3,7 +3,7 @@
   "name": "Libre Hardware Monitor Plugin",
   "author": "ItaiMarom",
   "packageId": "ItaiMarom.LibreHardwareMonitorPlugin",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "target-plugin-api-version": 40,
   "target-macro-deck-version": "2.13.0-b11",
   "dll": "ItaiMarom.LibreHardwareMonitorPlugin.dll",
