@@ -15,7 +15,7 @@ this plugin include the LibreHardwareMonitorlib into it so you dont need any oth
 
 ### This is a plugin for [Macro Deck 2](https://github.com/SuchByte/Macro-Deck), it does NOT function as a standalone app
 
-
+<img align="right" height="96px" src="https://macrodeck.org/images/macro_deck_2_community_plugin.png" />
 
 # Third party licenses
 This plugin uses some awesome 3rd party libraries:
