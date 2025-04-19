@@ -14,7 +14,7 @@ Access detailed information from various hardware components such as:
 this plugin include the LibreHardwareMonitorlib into it so you dont need any other app running in the background
 
 ### This is a plugin for [Macro Deck 2](https://github.com/SuchByte/Macro-Deck), it does NOT function as a standalone app
-<img height="64px" src="https://macrodeck.org/images/macro_deck_2_official_plugin.png" />
+
 
 
 # Third party licenses
