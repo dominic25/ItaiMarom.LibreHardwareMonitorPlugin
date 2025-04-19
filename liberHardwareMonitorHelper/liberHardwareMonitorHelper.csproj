@@ -16,8 +16,8 @@
 	</Reference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	<Exec Command="xcopy &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25AppData%25\Macro Deck\plugins\$(SolutionName)\$(TargetName).dll&quot; /Y /I" />
-  </Target>
+  </Target>-->
 
 </Project>
