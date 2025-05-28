@@ -6,8 +6,9 @@
 	<Authors>ItaiMarom</Authors>
 	<Product>ItaiMarom.LibreHardwareMonitorPlugin</Product>
 	<AssemblyName>ItaiMarom.LibreHardwareMonitorPlugin</AssemblyName>
-	<Version>0.5.0</Version>
+	<Version>0.5.1</Version>
 	<UseWindowsForms>true</UseWindowsForms>
+	<Description>Obtaining Hardware sensor data without requiring a separate application</Description>
   </PropertyGroup>
 
   <ItemGroup>

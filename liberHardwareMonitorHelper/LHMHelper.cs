@@ -1,6 +1,7 @@
 ﻿using LibreHardwareMonitor.Hardware;
 using SuchByte.MacroDeck.Plugins;
 using SuchByte.MacroDeck.Variables;
+using System.Text.RegularExpressions;
 
 namespace liberHardwareMonitorHelper
 {
@@ -59,8 +60,7 @@ namespace liberHardwareMonitorHelper
                 {
                     if (sensor.Value != null)
                     {
-                        String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
-                        sensorName = sensorName.Replace(" ", "_").ToLower();
+                        String sensorName = RemoveNonAlphabetic(sensor.Name + "_" + sensor.SensorType.ToString()).ToLower();
                         VariableManager.DeleteVariable(sensorName);
                     }
                 }
@@ -81,9 +81,8 @@ namespace liberHardwareMonitorHelper
                         {
                             if (sensor.Value != null)
                             {
-                                String sensorName = sensor.Name + "_" + sensor.SensorType.ToString();
-                                sensorName = sensorName.Replace(" ", "_").ToLower();
-                                if (requestedSensors.Any(tuple => tuple.sensor.Replace(" ", "_").ToLower().Equals(sensorName, StringComparison.CurrentCultureIgnoreCase)))
+                                String sensorName = RemoveNonAlphabetic(sensor.Name + "_" + sensor.SensorType.ToString()).ToLower();
+                                if (requestedSensors.Any(tuple => RemoveNonAlphabetic(tuple.sensor.ToLower()).Equals(sensorName, StringComparison.CurrentCultureIgnoreCase)))
                                 {
                                     switch (sensor.SensorType)
                                     {
@@ -128,6 +127,11 @@ namespace liberHardwareMonitorHelper
                     }
                 }
             }
+        }
+        private static string RemoveNonAlphabetic(string input)
+        {
+            // This regex matches any character that is NOT (a-z, A-Z, 0-9)
+            return Regex.Replace(input, "[^a-zA-Z0-9]", "_");
         }
     }
 
